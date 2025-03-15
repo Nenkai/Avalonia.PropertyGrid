@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -43,7 +44,7 @@ namespace Avalonia.PropertyGrid.Utils
                     continue;
                 }
 
-                values.Add(CreateEnumValueWrapper((enumValue as Enum)!, enumValueField?.GetAnyCustomAttribute<EnumDisplayNameAttribute>()?.DisplayName));
+                values.Add(CreateEnumValueWrapper((enumValue as Enum)!, enumValueField?.GetAnyCustomAttribute<DescriptionAttribute>()?.Description));
             }
 
             return values.ToArray();

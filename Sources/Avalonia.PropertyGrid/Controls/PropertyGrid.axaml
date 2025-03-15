@@ -21,13 +21,20 @@
 		<StyleInclude Source="/Controls/RadioButtonListEdit.axaml"></StyleInclude>
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml"/>
 		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Simple/Simple.xaml"/>
+
+		<Style Selector="NumericUpDown">
+			<Setter Property="Padding" Value="0,0,0,0"/>
+			<Setter Property="Height" Value="26"/>
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="Height" Value="26"/>
+		</Style>
 	</UserControl.Styles>
-	
+
 	<Grid RowDefinitions="Auto,Auto,Auto,*">
 		<Grid x:Name="HeaderGrid"
 			  ColumnDefinitions="*,Auto, Auto, Auto"
-			  Margin="2"
-		  >
+			  Margin="2">
 			<!-- ReSharper disable once Xaml.StyleClassNotFound -->
 			<TextBox Classes="clearButton" x:Name="SearchTextBox" VerticalAlignment="Center" VerticalContentAlignment="Center" Watermark="{ll:Localize Search}" Grid.Column="0" Text="{Binding $parent[lc:PropertyGrid].ViewModel.FilterPattern.FilterText}" ></TextBox>
 			<ToggleButton x:Name="ShowStyleButton" Margin="2" Content="{Binding $parent[lc:PropertyGrid].ViewModel.ShowStyleText}" Grid.Column="1" IsChecked="{Binding $parent[lc:PropertyGrid].ViewModel.IsCategoryView}" ToolTip.Tip="{ll:Localize ShowStyle}"></ToggleButton>

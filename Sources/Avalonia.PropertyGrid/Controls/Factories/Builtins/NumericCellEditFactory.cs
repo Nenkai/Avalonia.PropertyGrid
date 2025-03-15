@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Controls;
 using PropertyModels.ComponentModel;
@@ -39,7 +40,6 @@ namespace Avalonia.PropertyGrid.Controls.Factories.Builtins
             var control = new NumericUpDown();
 
             var attr = propertyDescriptor.GetCustomAttribute<RangeAttribute>();
-
             if (attr != null)
             {
                 var values = DecimalConvertUtils.GetDecimalRange(attr);
@@ -87,6 +87,10 @@ namespace Avalonia.PropertyGrid.Controls.Factories.Builtins
                     }
                 }                
             }
+
+            var readOnlyAttr = propertyDescriptor.GetCustomAttribute<ReadOnlyAttribute>();
+            if (readOnlyAttr != null)
+                control.IsEnabled = !readOnlyAttr.IsReadOnly;
 
             control.ValueChanged += (s, e) =>
             {

@@ -139,6 +139,23 @@ namespace Avalonia.PropertyGrid.Controls
         }
 
         /// <summary>
+        /// The category style property
+        /// control property category algorithm
+        /// </summary>
+        public static readonly StyledProperty<PropertyGridCategoryStyle> PropertyCategoryStyleProperty = AvaloniaProperty.Register<PropertyGrid, PropertyGridCategoryStyle>(nameof(PropertyCategoryStyle));
+
+        /// <summary>
+        /// Gets or sets the order style.
+        /// </summary>
+        /// <value>The order style.</value>
+        [Category("Views")]
+        public PropertyGridCategoryStyle PropertyCategoryStyle
+        {
+            get => GetValue(PropertyCategoryStyleProperty);
+            set => SetValue(PropertyCategoryStyleProperty, value);
+        }
+
+        /// <summary>
         /// The name width property
         /// </summary>
         public static readonly StyledProperty<double> NameWidthProperty = AvaloniaProperty.Register<PropertyGrid, double>(nameof(NameWidth), 180);
@@ -249,6 +266,7 @@ namespace Avalonia.PropertyGrid.Controls
             ShowTitleProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>(OnShowTitleChanged));
             NameWidthProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<double>>(OnNameWidthChanged));
             IsReadOnlyProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>(OnIsReadOnyPropertyChanged));
+            PropertyCategoryStyleProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<PropertyGridCategoryStyle>>(OnCategoryStyleChanged));
         }
 
         /// <summary>
@@ -316,6 +334,11 @@ namespace Avalonia.PropertyGrid.Controls
             else if(e.PropertyName == nameof(ViewModel.PropertyOrderStyle))
             {
                 PropertyOrderStyle = ViewModel.PropertyOrderStyle;
+                BuildPropertiesView();
+            }
+            else if (e.PropertyName == nameof(ViewModel.CategoryStyle))
+            {
+                PropertyCategoryStyle = ViewModel.CategoryStyle;
                 BuildPropertiesView();
             }
             else if(e.PropertyName == nameof(ViewModel.IsReadOnly))
@@ -422,6 +445,7 @@ namespace Avalonia.PropertyGrid.Controls
             }
         }
 
+
         /// <summary>
         /// Called when [show style changed].
         /// </summary>
@@ -438,6 +462,28 @@ namespace Avalonia.PropertyGrid.Controls
             {
                 sender.OnCategoryOrderStyleChanged(e.OldValue, e.NewValue);
             }
+        }
+
+        /// <summary>
+        /// Called when [category style changed].
+        /// </summary>
+        /// <param name="e">The e.</param>
+        private static void OnCategoryStyleChanged(AvaloniaPropertyChangedEventArgs<PropertyGridCategoryStyle> e)
+        {
+            if (e.Sender is PropertyGrid sender)
+            {
+                sender.OnCategoryStyleChanged(e.OldValue, e.NewValue);
+            }
+        }
+
+        /// <summary>
+        /// Called when [show style changed].
+        /// </summary>
+        /// <param name="oldValue">The old value.</param>
+        /// <param name="newValue">The new value.</param>
+        private void OnCategoryStyleChanged(Optional<PropertyGridCategoryStyle> oldValue, BindingValue<PropertyGridCategoryStyle> newValue)
+        {
+            ViewModel.CategoryStyle = newValue.Value;
         }
 
         private void OnCategoryOrderStyleChanged(Optional<PropertyGridOrderStyle> oldValue, BindingValue<PropertyGridOrderStyle> newValue)
@@ -748,7 +794,7 @@ namespace Avalonia.PropertyGrid.Controls
                 OwnerObject = target,
                 Target = target,
                 Container = (container as IPropertyGridCellInfo)?.Container,
-                CellType = PropertyGridCellType.Cell
+                CellType = PropertyGridCellType.Cell,
             };
 
             container.Add(cellInfo);
