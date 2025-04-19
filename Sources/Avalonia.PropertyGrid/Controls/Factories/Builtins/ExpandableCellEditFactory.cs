@@ -78,7 +78,7 @@ namespace Avalonia.PropertyGrid.Controls.Factories.Builtins
 
             var border = new Border
             {
-                BorderBrush = Brushes.Gray,
+                BorderBrush = Brushes.Black,
                 BorderThickness = new Thickness(0.5),
                 CornerRadius = new CornerRadius(0, 0, 5, 5),
                 Margin = new Thickness(0)
@@ -92,12 +92,11 @@ namespace Avalonia.PropertyGrid.Controls.Factories.Builtins
             Debug.Assert(propertyGrid.RootPropertyGrid != null);
             Debug.Assert(!Equals(propertyGrid.RootPropertyGrid, propertyGrid));
 
-            propertyGrid.ShowStyle = context.Root.ShowStyle;
+            propertyGrid.ShowStyle = PropertyGridShowStyle.Tiled;
             propertyGrid.AllowFilter = false;
             propertyGrid.AllowQuickFilter = false;
             propertyGrid.ShowTitle = false;
             propertyGrid.DataContext = null;
-
             border.Child = propertyGrid;
 
             // avoid recursive expansion

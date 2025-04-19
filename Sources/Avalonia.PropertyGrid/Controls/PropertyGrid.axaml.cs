@@ -8,6 +8,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.PropertyGrid.Controls.Implements;
 using Avalonia.PropertyGrid.Localization;
 using Avalonia.PropertyGrid.Services;
@@ -773,13 +774,20 @@ namespace Avalonia.PropertyGrid.Controls
             {
                 // nameBlock.SetValue(ToolTip.TipProperty, LocalizationService.Default[descriptionAttribute.Description]);
                 nameBlock.SetLocalizeBinding(ToolTip.TipProperty, descriptionAttribute.Description);
+                nameBlock.TextDecorations = [new TextDecoration()
+                {
+                    Location = TextDecorationLocation.Underline,
+                    StrokeOffsetUnit = TextDecorationUnit.Pixel,
+                    StrokeOffset = 2,
+                    StrokeDashArray = [3],
+                }];
             }
 
             grid.Children.Add(nameBlock);
 
             control.SetValue(Grid.RowProperty, grid.RowDefinitions.Count - 1);
             control.SetValue(Grid.ColumnProperty, 1);
-            control.Margin = new Thickness(4);
+            control.Margin = new Thickness(1);
             factory.HandleReadOnlyStateChanged(control, context.IsReadOnly);
 
             grid.Children.Add(control);
