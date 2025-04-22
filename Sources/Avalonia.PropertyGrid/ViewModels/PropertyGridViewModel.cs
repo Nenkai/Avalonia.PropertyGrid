@@ -513,7 +513,7 @@ namespace Avalonia.PropertyGrid.ViewModels
             }
             else if (CategoryStyle == PropertyGridCategoryStyle.InheritingOrder)
             {
-                var groups = AllProperties.GroupBy(e => e.ComponentType.Name);
+                var groups = AllProperties.GroupBy(e => e.ComponentType.Name).Reverse();
                 foreach (var group in groups)
                 {
                     var list = new List<PropertyDescriptor>(group);

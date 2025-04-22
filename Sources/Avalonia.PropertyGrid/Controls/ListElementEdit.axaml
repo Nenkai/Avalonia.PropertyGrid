@@ -17,16 +17,17 @@
 		  <DataValidationErrors>
 			  <Grid ColumnDefinitions="36, *,Auto,Auto">
 				  <TextBlock Grid.Column="0" Text="{Binding DisplayName}" 
-							 Margin="10,0,2,0"
-							 VerticalAlignment="Center"
+							 Margin="10,6,2,0"
+							 VerticalAlignment="Top"
 							 ></TextBlock>
 				  <controls:ListElementPlaceholderEdit Grid.Column="1"/>
 				  <Button x:Name="InsertButton"
 						  Grid.Column="2"
-						  Margin="2"
+						  Margin="2,8,0,0"
 						  Padding="1,-2,0,0"
 						  Width="16"
 						  Height="16"
+						  VerticalAlignment="Top"
 						  HorizontalContentAlignment="Center"
 						  VerticalContentAlignment="Center"
 						  Command="{TemplateBinding InsertCommand}"
@@ -36,10 +37,11 @@
 						  >+</Button>
 				  <Button x:Name="RemoveButton"
 						  Grid.Column="3"
-						  Margin="2"
+						  Margin="2,8,0,0"
 						  Padding="0,-2,0,0"
 						  Width="16"
 						  Height="16"
+						  VerticalAlignment="Top"
 						  Command="{TemplateBinding RemoveCommand}"
 						  ToolTip.Tip="{ll:Localize RemoveElement}"
 						  IsVisible="{Binding IsEditable}"

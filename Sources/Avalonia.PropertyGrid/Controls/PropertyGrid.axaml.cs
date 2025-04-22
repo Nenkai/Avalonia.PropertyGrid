@@ -764,7 +764,7 @@ namespace Avalonia.PropertyGrid.Controls
             var nameBlock = new TextBlock();
             nameBlock.SetValue(Grid.RowProperty, grid.RowDefinitions.Count - 1);
             nameBlock.SetValue(Grid.ColumnProperty, 0);
-            nameBlock.VerticalAlignment = VerticalAlignment.Center;
+            nameBlock.VerticalAlignment = VerticalAlignment.Top;
             nameBlock.Margin = new Thickness(4);
 
             // nameBlock.Text = LocalizationService.Default[property.DisplayName];
