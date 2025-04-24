@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -28,6 +29,9 @@ namespace Avalonia.PropertyGrid.Utils
 
             List<EnumValueWrapper> values = new List<EnumValueWrapper>();
 
+            Array vals = enumType.GetEnumValues();
+
+            bool hasDisplayOrder = false;
             foreach(var name in enumType.GetEnumNames())
             {
                 var enumValueField = enumType.GetField(name);
@@ -35,6 +39,9 @@ namespace Avalonia.PropertyGrid.Utils
                 {
                     continue;
                 }
+
+                if (!hasDisplayOrder && enumValueField.GetCustomAttribute<DisplayAttribute>()?.GetOrder() is not null)
+                    hasDisplayOrder = true;
 
                 var enumValue = Enum.Parse(enumType, name);
                 Debug.Assert(enumValue is Enum);
@@ -47,7 +54,19 @@ namespace Avalonia.PropertyGrid.Utils
                 values.Add(CreateEnumValueWrapper((enumValue as Enum)!, enumValueField?.GetAnyCustomAttribute<DescriptionAttribute>()?.Description));
             }
 
-            return values.ToArray();
+            if (hasDisplayOrder)
+            {
+                return values
+                    .OrderBy(e =>
+                    {
+                        var type = e.Value.GetType();
+                        var memberInfo = type.GetMember(e.DisplayName)[0];
+                        return memberInfo.GetAnyCustomAttribute<DisplayAttribute>()?.GetOrder() ?? 1000;
+                    })
+                    .ToArray();
+            }
+            else
+                return values.ToArray();
         }
 
         /// <summary>
