@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -132,6 +133,10 @@ public class NumericCellEditFactory : AbstractCellEditFactory
                 }
             }
         }
+
+        var readOnlyAttr = propertyDescriptor.GetCustomAttribute<ReadOnlyAttribute>();
+        if (readOnlyAttr != null)
+            control.IsEnabled = !readOnlyAttr.IsReadOnly;
 
         control.ValueChanged += (s, e) =>
         {

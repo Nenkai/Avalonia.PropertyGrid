@@ -52,6 +52,22 @@ public enum PropertyGridOrderStyle
 }
 
 /// <summary>
+/// Enum PropertyGridCategorizingStyle
+/// </summary>
+public enum PropertyGridCategorizingStyle
+{
+    /// <summary>
+    /// Normal mode, categories are specified.
+    /// </summary>
+    Normal,
+
+    /// <summary>
+    /// Properties are grouped as categories depending on their declaration's locations - inheriting order.
+    /// </summary>
+    CategorizeByObjectInheritingOrder,
+}
+
+/// <summary>
 /// Enum PropertyVisibility
 /// </summary>
 [Flags]
@@ -178,6 +194,24 @@ internal class PropertyGridViewModel : MiniReactiveObject, IPropertyGridFilterCo
     /// Occurs when [custom property descriptor filter].
     /// </summary>
     public event EventHandler<CustomPropertyDescriptorFilterEventArgs>? CustomPropertyDescriptorFilter;
+
+    private PropertyGridCategorizingStyle _categoryStyle = PropertyGridCategorizingStyle.Normal;
+
+    /// <summary>
+    /// Gets the category order style
+    /// </summary>
+    /// <value>The show style </value>
+    public PropertyGridCategorizingStyle CategorizingStyle
+    {
+        get => _categoryStyle;
+        set
+        {
+            if (_categoryStyle != value)
+            {
+                this.RaiseAndSetIfChanged(ref _categoryStyle, value);
+            }
+        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PropertyGridViewModel" /> class.
@@ -472,19 +506,31 @@ internal class PropertyGridViewModel : MiniReactiveObject, IPropertyGridFilterCo
     {
         Categories.Clear();
 
-        foreach (var property in AllProperties)
+        if (CategorizingStyle == PropertyGridCategorizingStyle.Normal)
         {
-            var category = GetCategory(property);
+            foreach (var property in AllProperties)
+            {
+                var category = GetCategory(property);
 
-            var index = Categories.IndexOf(x => x.Key == category);
-            if (index == -1)
-            {
-                var list = new List<PropertyDescriptor> { property };
-                Categories.Add(new KeyValuePair<string, List<PropertyDescriptor>>(category, list));
+                var index = Categories.IndexOf(x => x.Key == category);
+                if (index == -1)
+                {
+                    var list = new List<PropertyDescriptor> { property };
+                    Categories.Add(new KeyValuePair<string, List<PropertyDescriptor>>(category, list));
+                }
+                else
+                {
+                    Categories[index].Value.Add(property);
+                }
             }
-            else
+        }
+        else if (CategorizingStyle == PropertyGridCategorizingStyle.CategorizeByObjectInheritingOrder)
+        {
+            var groups = AllProperties.GroupBy(e => e.ComponentType.Name).Reverse();
+            foreach (var group in groups)
             {
-                Categories[index].Value.Add(property);
+                var list = new List<PropertyDescriptor>(group);
+                Categories.Add(new KeyValuePair<string, List<PropertyDescriptor>>(group.Key, list));
             }
         }
     }

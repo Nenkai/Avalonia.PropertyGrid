@@ -52,7 +52,7 @@ public class ExpandableCellEditFactory : AbstractCellEditFactory
 
         var border = new Border
         {
-            BorderBrush = Brushes.Gray,
+            BorderBrush = Brushes.Black,
             BorderThickness = new Thickness(context.Root.LayoutStyle == PropertyGridLayoutStyle.Inline ? 0 : 0.5),
             CornerRadius = new CornerRadius(0, 0, 5, 5),
             Margin = new Thickness(0)
@@ -75,10 +75,12 @@ public class ExpandableCellEditFactory : AbstractCellEditFactory
                 ? PropertyGridLayoutStyle.Tree
                 : PropertyGridLayoutStyle.Inline);
             
-        propertyGrid.IsCategoryVisible = attr == null || attr.IsCategoryVisible == NullableBooleanType.Undefined
+        // Not having categories for children is probably for the best. Spacing bloat otherwise.
+        propertyGrid.IsCategoryVisible = false;
+        /* propertyGrid.IsCategoryVisible = attr == null || attr.IsCategoryVisible == NullableBooleanType.Undefined
             ? context.Root.IsCategoryVisible
-            : (attr.IsCategoryVisible is NullableBooleanType.Yes);
-            
+            : (attr.IsCategoryVisible is NullableBooleanType.Yes); */
+
         propertyGrid.CategoryOrderStyle =
             attr == null || attr.IsCategoryBuiltinOrder == NullableBooleanType.Undefined
                 ? context.Root.CategoryOrderStyle

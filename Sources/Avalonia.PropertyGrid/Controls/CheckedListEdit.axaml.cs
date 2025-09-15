@@ -405,7 +405,7 @@ internal static class ApplyDisplayModeUtils
             {
                 Content = new DeferredPanelTemplate(() =>
                 {
-                    if (displayMode is SelectableListDisplayMode.AutoWrap or SelectableListDisplayMode.Default)
+                    if (displayMode is SelectableListDisplayMode.AutoWrap)
                     {
                         return new WrapPanel { Orientation = Orientation.Horizontal, ItemSpacing = 4};
                     }

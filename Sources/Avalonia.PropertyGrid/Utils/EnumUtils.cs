@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+
 using Avalonia.PropertyGrid.Services;
+
 using PropertyModels.ComponentModel;
 using PropertyModels.ComponentModel.DataAnnotations;
 using PropertyModels.Extensions;
@@ -26,6 +31,9 @@ public static class EnumUtils
 
         List<EnumValueWrapper> values = [];
 
+        Array vals = enumType.GetEnumValues();
+
+        bool hasDisplayOrder = false;
         foreach (var name in enumType.GetEnumNames())
         {
             var enumValueField = enumType.GetField(name);
@@ -33,6 +41,9 @@ public static class EnumUtils
             {
                 continue;
             }
+
+            if (!hasDisplayOrder && enumValueField.GetCustomAttribute<DisplayAttribute>()?.GetOrder() is not null)
+                hasDisplayOrder = true;
 
             var enumValue = Enum.Parse(enumType, name);
             Debug.Assert(enumValue is Enum);
@@ -43,10 +54,22 @@ public static class EnumUtils
                 continue;
             }
 
-            values.Add(CreateEnumValueWrapper((enumValue as Enum)!, enumValueField?.GetAnyCustomAttribute<EnumDisplayNameAttribute>()?.DisplayName));
+            values.Add(CreateEnumValueWrapper((enumValue as Enum)!, enumValueField?.GetAnyCustomAttribute<DescriptionAttribute>()?.Description));
         }
 
-        return [.. values];
+        if (hasDisplayOrder)
+        {
+            return values
+                .OrderBy(e =>
+                {
+                    var type = e.Value.GetType();
+                    var memberInfo = type.GetMember(e.DisplayName)[0];
+                    return memberInfo.GetAnyCustomAttribute<DisplayAttribute>()?.GetOrder() ?? 1000;
+                })
+                .ToArray();
+        }
+        else
+            return values.ToArray();
     }
 
     /// <summary>

@@ -25,6 +25,14 @@
 		<StyleInclude Source="/Controls/PreviewableColorPicker.axaml"></StyleInclude>
         <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml"/>
 		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Simple/Simple.xaml"/>
+
+		<Style Selector="NumericUpDown">
+			<Setter Property="Padding" Value="0,0,0,0"/>
+			<Setter Property="Height" Value="26"/>
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="Height" Value="26"/>
+		</Style>
 	</UserControl.Styles>
 	
 	<Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto">
@@ -40,7 +48,7 @@
 			<TextBox Grid.Row="0" Grid.Column="0" Classes="clearButton" x:Name="SearchTextBox" VerticalAlignment="Center" VerticalContentAlignment="Center" Watermark="{ll:Localize Search}" Text="{Binding $parent[lc:PropertyGrid].ViewModel.FilterPattern.FilterText}" ></TextBox>
 			<Button Grid.Row="0" Grid.Column="1" x:Name="OptionsButton" Margin="2" Click="OnOptionsButtonClicked" VerticalContentAlignment="Center" VerticalAlignment="Center" Padding="2" ToolTip.Tip="{ll:Localize MainOptionSettingsTooltip}">
 				<Button.Content>
-					<Image Source="/Assets/Images/options.png" Width="24" Height="24"></Image>
+					<Image Source="/Assets/Images/options.png" Width="20" Height="19"></Image>
 				</Button.Content>
 				<Button.ContextMenu>
 					<ContextMenu x:Name="OptionsContextMenu">

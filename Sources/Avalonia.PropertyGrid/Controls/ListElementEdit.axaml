@@ -22,8 +22,8 @@
 		  <DataValidationErrors>
 			  <Grid ColumnDefinitions="36, *,Auto,Auto">
 				  <TextBlock Grid.Column="0" Text="{Binding DisplayName}" 
-							 Margin="10,0,2,0"
-							 VerticalAlignment="Center"
+							 Margin="10,6,2,0"
+							 VerticalAlignment="Top"
 							 ></TextBlock>
 				  <controls:ListElementPlaceholderEdit 
 					  Grid.Column="1"
@@ -31,10 +31,11 @@
 				  </controls:ListElementPlaceholderEdit>
 				  <Button x:Name="InsertButton"
 						  Grid.Column="2"
-						  Margin="2"
-				          Padding="2"
-						  Width="32"
-						  Height="32"
+						  Margin="2,8,0,0"
+								Padding="1,-2,0,0"
+						  Width="16"
+						  Height="16"
+						  VerticalAlignment="Top"
 						  HorizontalContentAlignment="Center"
 						  VerticalContentAlignment="Center"
 						  Command="{TemplateBinding InsertCommand}"
@@ -49,22 +50,23 @@
 						  </Style>
 					  </Button.Styles>
 					  <Button.Content>
-						  <Image Source="/Assets/Images/add.png" Width="24" Height="24"></Image>
+						  <Image Source="/Assets/Images/add.png" Width="16" Height="16"></Image>
 					  </Button.Content>
 				  </Button>
 				  <Button x:Name="RemoveButton"
 						  Grid.Column="3"
-						  Margin="2"
-						  Padding="2"
-						  Width="32"
-						  Height="32"
+						  Margin="2,8,0,0"
+						  Padding="0,-2,0,0"
+						  Width="16"
+						  Height="16"
+						  VerticalAlignment="Top"
 						  HorizontalContentAlignment="Center"
 						  VerticalContentAlignment="Center"
 						  Command="{TemplateBinding RemoveCommand}"
 						  ToolTip.Tip="{ll:Localize RemoveElement}"
 						  IsVisible="{Binding IsEditable}"
 						  IsEnabled="{Binding IsReadOnly, Converter={StaticResource InverseBooleanConverter}}"
-						  FontSize="18"
+						  FontSize="12"
 						  >
 					  <Button.Styles>
 						  <Style Selector="Button:disabled Image">
@@ -72,7 +74,7 @@
 						  </Style>
 					  </Button.Styles>
 					  <Button.Content>
-						  <Image Source="/Assets/Images/delete.png" Width="24" Height="24"></Image>
+						  <Image Source="/Assets/Images/delete.png" Width="16" Height="16"></Image>
 					  </Button.Content>
 				  </Button>
 			  </Grid>

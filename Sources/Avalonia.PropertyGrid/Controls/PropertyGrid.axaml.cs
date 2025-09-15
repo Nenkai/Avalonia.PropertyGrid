@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -17,7 +19,9 @@ using Avalonia.PropertyGrid.Services;
 using Avalonia.PropertyGrid.Utils;
 using Avalonia.PropertyGrid.ViewModels;
 using Avalonia.Reactive;
+using Avalonia.Styling;
 using Avalonia.VisualTree;
+
 using PropertyModels.ComponentModel;
 using PropertyModels.ComponentModel.DataAnnotations;
 using PropertyModels.Extensions;
@@ -208,6 +212,24 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
     {
         get => GetValue(PropertyOrderStyleProperty);
         set => SetValue(PropertyOrderStyleProperty, value);
+    }
+
+    /// <summary>
+    /// The category style property
+    /// control property category algorithm
+    /// </summary>
+    public static readonly StyledProperty<PropertyGridCategorizingStyle> PropertyCategorizingStyleProperty = 
+        AvaloniaProperty.Register<PropertyGrid, PropertyGridCategorizingStyle>(nameof(PropertyCategorizingStyle));
+
+    /// <summary>
+    /// Gets or sets the order style.
+    /// </summary>
+    /// <value>The order style.</value>
+    [Category("Views")]
+    public PropertyGridCategorizingStyle PropertyCategorizingStyle
+    {
+        get => GetValue(PropertyCategorizingStyleProperty);
+        set => SetValue(PropertyCategorizingStyleProperty, value);
     }
 
     /// <summary>
@@ -538,6 +560,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
         _ = IsTitleVisibleProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>(OnShowTitleChanged));
         _ = IsReadOnlyProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>(OnIsReadOnlyPropertyChanged));
         _ = NameWidthProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<double>>(OnNameWidthChanged));
+        _ = PropertyCategorizingStyleProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<PropertyGridCategorizingStyle>>(OnPropertyCategorizingStyleChanged));
         _ = AllCategoriesExpandedProperty.Changed.Subscribe(new AnonymousObserver<AvaloniaPropertyChangedEventArgs<bool>>(e => 
         {
             if (e.Sender is PropertyGrid pg && pg._categoryExpanders.Any())
@@ -749,6 +772,28 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
     }
 
     private void OnPropertyOrderStyleChanged(Optional<PropertyGridOrderStyle> oldValue, BindingValue<PropertyGridOrderStyle> newValue) => BuildPropertiesView();
+
+    /// <summary>
+    /// Called when [category style changed].
+    /// </summary>
+    /// <param name="e">The e.</param>
+    private static void OnPropertyCategorizingStyleChanged(AvaloniaPropertyChangedEventArgs<PropertyGridCategorizingStyle> e)
+    {
+        if (e.Sender is PropertyGrid sender)
+        {
+            sender.OnPropertyCategorizingStyleChanged(e.OldValue, e.NewValue);
+        }
+    }
+
+    /// <summary>
+    /// Called when [show style changed].
+    /// </summary>
+    /// <param name="oldValue">The old value.</param>
+    /// <param name="newValue">The new value.</param>
+    private void OnPropertyCategorizingStyleChanged(Optional<PropertyGridCategorizingStyle> oldValue, BindingValue<PropertyGridCategorizingStyle> newValue)
+    {
+        ViewModel.CategorizingStyle = newValue.Value;
+    }
 
     private static void OnShowTitleChanged(AvaloniaPropertyChangedEventArgs<bool> e)
     {
@@ -1189,7 +1234,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
         control.SetValue(Grid.RowProperty, grid.RowDefinitions.Count - 1);
         control.SetValue(Grid.ColumnProperty, shouldUseInlineMode ? 0 : 1);
         control.SetValue(Grid.ColumnSpanProperty, shouldUseInlineMode ? 2 : 1);
-        control.Margin = new Thickness(shouldUseInlineMode ? 0 : 4);
+        control.Margin = new Thickness(shouldUseInlineMode ? 0 : 1);
         factory.HandleReadOnlyStateChanged(control, context.IsReadOnly);
 
         control.GotFocus += (ss, ee) =>
@@ -1657,7 +1702,7 @@ public class PropertyGotFocusEventArgs : RoutedEventArgs
         Context = context;
     }
 }
-    
+
 /// <summary>
 /// property got focus event args
 /// </summary>
