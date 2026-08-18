@@ -59,7 +59,7 @@ public class PathCellEditFactory : AbstractCellEditFactory
                 attribute.InitialFileName = control.Text;
             }
 
-            var files = await PathBrowserUtils.ShowPathBrowserAsync((control.GetVisualRoot() as Window)!, attribute);
+            var files = await PathBrowserUtils.ShowPathBrowserAsync((TopLevel.GetTopLevel(control) as Window)!, attribute);
 
             if (files is { Length: > 0 })
             {
