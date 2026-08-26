@@ -101,7 +101,7 @@ public partial class CheckedMask : UserControl
         var allButton = new ToggleButton
         {
             IsChecked = value.IsAllChecked,
-            Margin = new Thickness(6),
+            Margin = new Thickness(2),
             MinWidth = ButtonMinWidth,
             HorizontalContentAlignment = HorizontalAlignment.Center
         };

@@ -1033,7 +1033,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
                 if (contentPresenter != null)
                 {
                     contentPresenter.Margin = new Thickness(
-                        8, 
+                        2, 
                         contentPresenter.Margin.Top,
                         contentPresenter.Margin.Right,
                         contentPresenter.Margin.Bottom
@@ -1205,8 +1205,8 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
         {
             var nameTextBlock = new TextBlock
             {
-                Margin = new Thickness(4),
-                VerticalAlignment = VerticalAlignment.Center
+                Margin = new Thickness(0, 4, 0, 0),
+                VerticalAlignment = VerticalAlignment.Top
             };
 
             var args = new CustomNameBlockEventArgs(context, nameTextBlock);
@@ -1285,7 +1285,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
             var operationControl = args.CustomControl ?? new Button
             {
                 Content = "?",
-                Margin = new Thickness(4, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center
             }; 
