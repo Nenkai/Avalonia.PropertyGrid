@@ -99,7 +99,7 @@ public class ExpandableCellEditFactory : AbstractCellEditFactory
         propertyGrid.IsHeaderVisible = false;
         propertyGrid.IsQuickFilterVisible = false;
         propertyGrid.IsTitleVisible = false;
-        propertyGrid.IsAutoNameWidth = false;
+        propertyGrid.IsAutoNameWidth = true;
         propertyGrid.DataContext = null;
 
         border.Child = propertyGrid;

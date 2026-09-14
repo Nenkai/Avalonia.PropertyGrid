@@ -20,6 +20,7 @@ using Avalonia.PropertyGrid.Utils;
 using Avalonia.PropertyGrid.ViewModels;
 using Avalonia.Reactive;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 using PropertyModels.ComponentModel;
@@ -620,7 +621,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
     }
 
     private void BroadcastCustomPropertyDescriptorFilterEvent(object? sender, CustomPropertyDescriptorFilterEventArgs e) => RaiseEvent(e);
-        
+
     /// <summary>
     /// handle root name width changed.
     /// </summary>
@@ -628,9 +629,14 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
     /// <param name="e"></param>
     private void OnRootNameWidthChanged(object? sender, EventArgs e)
     {
+        if (IsAutoNameWidth)
+        {
+            // this grid computes its own column width from its own property list
+            return;
+        }
+
         if (sender is IPropertyGrid propertyGrid)
         {
-            // ReSharper disable once ConvertSwitchStatementToSwitchExpression
             NameWidth = propertyGrid.NameWidth;
         }
     }
@@ -959,13 +965,40 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
         }
 
         AddPropertyChangedObservers(_cellInfoCache.Children);
-
         RefreshVisibilities(ViewModel.FilterPattern.FilterText);
 
-        // force refresh
-        if (!IsAutoNameWidth)
+        if (IsAutoNameWidth)
+        {
+            ApplyAutoNameWidth();
+        }
+        else
         {
             NameWidthChanged.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void ApplyAutoNameWidth()
+    {
+        double maxWidth = 0;
+
+        void Visit(IEnumerable<IPropertyGridCellInfo> cells)
+        {
+            foreach (var cell in cells)
+            {
+                if (cell.NameControl != null)
+                {
+                    cell.NameControl.Measure(Size.Infinity);
+                    maxWidth = Math.Max(maxWidth, cell.NameControl.DesiredSize.Width);
+                }
+                Visit(cell.Children);
+            }
+        }
+
+        Visit(_cellInfoCache.Children);
+
+        if (maxWidth > 0)
+        {
+            NameWidth = maxWidth + 8; // small padding
         }
     }
     #endregion
@@ -1147,6 +1180,11 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
         public PropertyCellContext Context;
     }
 
+    private void RaiseEventOnRoot(RoutedEventArgs args)
+    {
+        (RootPropertyGrid as PropertyGrid ?? this).RaiseEvent(args);
+    }
+
     /// <summary>
     /// Builds the property cell edit.
     /// </summary>
@@ -1210,7 +1248,7 @@ public partial class PropertyGrid : UserControl, IPropertyGrid
             };
 
             var args = new CustomNameBlockEventArgs(context, nameTextBlock);
-            RaiseEvent(args);
+            RaiseEventOnRoot(args);
 
             nameControl = args.CustomNameBlock ?? nameTextBlock;
 
